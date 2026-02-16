@@ -37,18 +37,19 @@ const Cart = () => {
                             <div className="space-y-4 relative">
                                 {products.map((product) => (
                                     <div key={product.id} className="bg-white rounded-lg shadow-md p-4 flex gap-4 hover:shadow-lg transition relative">
-                                        <button 
+                                        <button
                                             onClick={() => dispatch(removeToCart(product.id))}
-                                            className='absolute top-2 right-2 p-1 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition hover:scale-110' 
+                                            className='absolute top-2 right-2 p-1 bg-red-100 hover:bg-red-200 text-red-600 rounded-full transition hover:scale-110'
                                             title="Remove from cart"
                                         >
                                             <X size={18} />
                                         </button>
                                         {/* Image */}
                                         <div className="w-24 h-24 shrink-0 bg-gray-100 rounded-lg overflow-hidden">
-                                            <img 
-                                                src={product.images[0]} 
-                                                alt={product.title} 
+                                            <img
+                                                // Check karein ke images exist karti hain ya nahi
+                                                src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
+                                                alt={product.title}
                                                 className="w-full h-full object-cover"
                                             />
                                         </div>
@@ -63,7 +64,7 @@ const Cart = () => {
                                         {/* Quantity Controls */}
                                         <div className="flex flex-col items-center justify-center gap-2">
                                             <div className="flex items-center border border-gray-300 rounded-lg bg-gray-50">
-                                                <button 
+                                                <button
                                                     onClick={() => dispatch(decrement(product.id))}
                                                     className="px-3 py-1 text-gray-600 hover:bg-gray-200 transition"
                                                 >
@@ -72,7 +73,7 @@ const Cart = () => {
                                                 <span className="px-4 py-1 font-semibold text-gray-800 border-l border-r border-gray-300">
                                                     {product.quantity}
                                                 </span>
-                                                <button 
+                                                <button
                                                     onClick={() => dispatch(increment(product.id))}
                                                     className="px-3 py-1 text-gray-600 hover:bg-gray-200 transition"
                                                 >
@@ -80,7 +81,7 @@ const Cart = () => {
                                                 </button>
                                             </div>
                                         </div>
-                                         
+
                                     </div>
                                 ))}
                             </div>
@@ -90,7 +91,7 @@ const Cart = () => {
                         <div className="lg:col-span-1">
                             <div className="bg-white rounded-lg shadow-md p-6 sticky top-8">
                                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
-                                
+
                                 <div className="space-y-4 mb-6 border-b pb-4">
                                     <div className="flex justify-between text-gray-700">
                                         <span>Subtotal</span>
@@ -111,7 +112,7 @@ const Cart = () => {
                                     <span className="text-blue-600">${(totalPrice * 1.1).toFixed(2)}</span>
                                 </div>
 
-                                <button 
+                                <button
                                     onClick={hanndleAddToCart}
                                     className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition mb-3"
                                 >
