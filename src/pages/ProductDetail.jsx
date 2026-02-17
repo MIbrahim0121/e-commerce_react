@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice"; // Path check kar lena
 import { toast } from "react-toastify";
 import { Star, ShoppingBasket } from "lucide-react";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const ProductDetail = () => {
   const { id } = useParams(); // URL mein se ID (e.g., '5') yahan aayegi
@@ -33,13 +35,19 @@ const ProductDetail = () => {
 
   // 3. ADD TO CART WITH QUANTITY
   const handleAddToCart = () => {
-    dispatch(addToCart({
-        id: product.id,
-        title: product.title,
-        image: selectedImage,
-        price: product.price,
-        quantity: quantity // Yahan hum user ki select ki hui quantity bhej rahe hain
-    }));
+    dispatch(addToCart(
+    //   {
+    //     id: product.id,
+    //     title: product.title,
+    //     image: selectedImage,
+    //     price: product.price,
+    //     quantity: quantity 
+    //     // Yahan hum user ki select ki hui quantity bhej rahe hain
+    // }
+    product
+  ));
+  console.log(product);
+  
     toast.success(`${product.title} Added to Cart!`);
   };
 
@@ -56,18 +64,26 @@ const ProductDetail = () => {
         <div className="flex flex-col">
           {/* Main Big Image */}
           <div className="h-100 md:h-125 w-full bg-gray-100 rounded-xl overflow-hidden mb-4 border border-gray-200 shadow-sm relative group">
-             <img src={selectedImage} alt={product.title} className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" />
+             <LazyLoadImage
+               src={selectedImage}
+               alt={product.title}
+               className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+               effect="blur"
+               placeholderSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+"
+             />
           </div>
           
           {/* Thumbnails (Choti Images) */}
           <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
              {product.images.map((img, index) => (
-               <img 
-                 key={index} 
-                 src={img} 
-                 alt=""
-                 onClick={() => setSelectedImage(img)} // Click par Main Image change hogi
+               <LazyLoadImage
+                 key={index}
+                 src={img}
+                 alt={product?.title || "Product image"}
+                 onClick={() => setSelectedImage(img)}
                  className={`w-20 h-20 object-cover rounded-lg cursor-pointer border-2 transition-all ${selectedImage === img ? 'border-red-500 scale-105' : 'border-gray-200 hover:border-gray-400'}`}
+                 effect="blur"
+                 placeholderSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+"
                />
              ))}
           </div>

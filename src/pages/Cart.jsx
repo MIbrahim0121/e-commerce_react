@@ -48,7 +48,8 @@ const Cart = () => {
                                         <div className="w-24 h-24 shrink-0 bg-gray-100 rounded-lg overflow-hidden">
                                             <img
                                                 // Check karein ke images exist karti hain ya nahi
-                                                src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
+                                                src={product.images[0]}
+                                                // src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/150"}
                                                 alt={product.title}
                                                 className="w-full h-full object-cover"
                                             />

@@ -4,7 +4,7 @@ const loadCart = () => {
     try {
         const serialized = localStorage.getItem('cart')
         return serialized ? JSON.parse(serialized) : []
-    } catch (err) {
+    } catch (_) {
         return []
     }
 }
@@ -12,7 +12,7 @@ const loadCart = () => {
 const saveCart = (cart) => {
     try {
         localStorage.setItem('cart', JSON.stringify(cart))
-    } catch (err) {
+    } catch (_) {
         // ignore write errors
     }
 }

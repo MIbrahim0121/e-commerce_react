@@ -47,7 +47,7 @@ const Home = () => {
                         <p className='md:text-lg text-sm md:w-[80%] md:text-left text-center' >Be the first to wear this season’s latest looks. Handpicked and freshly styled.</p>
                     </div>
                     <div className='flex justify-center  md:block  '>
-                        <button className='border  border-[#EF233C] text-[#EF233C] rounded-2xl px-5 py-3 font-medium '>SEE WHAT'S NEW</button>
+                        <button className='border hover:bg-[#EF233C] hover:text-white  transition duration-900 border-[#EF233C] text-[#EF233C] rounded-2xl px-5 py-3 font-medium '>SEE WHAT'S NEW</button>
                     </div>
 
                 </div>

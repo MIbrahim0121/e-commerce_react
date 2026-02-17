@@ -1,4 +1,6 @@
 import React from 'react';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const AboutPage = () => {
   return (
@@ -6,10 +8,11 @@ const AboutPage = () => {
       {/* 1. Hero Section */}
       <section className="relative h-150 flex items-center justify-center text-center text-white">
         <div className="absolute inset-0 bg-black/40 z-10"></div>
-        <img 
-          src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&q=80" 
-          alt="Hero" 
+        <img
+          src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1920&h=600&q=80"
+          alt="Hero"
           className="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
         />
         <div className="relative z-20 max-w-2xl px-4">
           <h1 className="text-5xl font-bold mb-4">Style That Moves With You</h1>
@@ -45,7 +48,13 @@ const AboutPage = () => {
       <section className="bg-gray-50 py-20">
         <div className="max-w-7xl mx-auto px-10 flex flex-col md:flex-row items-center gap-12">
           <div className="w-full md:w-1/2">
-            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80" alt="About" className="rounded-xl shadow-xl" />
+            <LazyLoadImage
+              src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&h=600&q=80"
+              alt="About"
+              className="rounded-xl shadow-xl"
+              effect="blur"
+              placeholderSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+"
+            />
           </div>
           <div className="w-full md:w-1/2 bg-white p-12 rounded-xl shadow-sm border ml-0 md:-ml-20 z-10">
             <h2 className="text-3xl font-bold mb-6">More Than Just Clothing</h2>
@@ -66,7 +75,13 @@ const AboutPage = () => {
           {/* Row 2 - Thoughtfully Designed (Reversed) */}
           <div className="flex flex-col md:flex-row-reverse items-center gap-0 md:gap-12">
             <div className="w-full md:w-3/5">
-              <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80" alt="Design" className="rounded-2xl shadow-2xl w-full h-100 object-cover" />
+              <LazyLoadImage
+                src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=800&h=600&q=80"
+                alt="Design"
+                className="rounded-2xl shadow-2xl w-full h-100 object-cover"
+                effect="blur"
+                placeholderSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+"
+              />
             </div>
             <div className="w-full md:w-2/5 bg-[#1a1a1a] text-white p-8 md:p-14 rounded-2xl shadow-lg -mt-12 md:mt-0 md:-mr-24 z-20 relative">
               <h2 className="text-2xl md:text-3xl font-bold mb-6">Thoughtfully Designed for All</h2>

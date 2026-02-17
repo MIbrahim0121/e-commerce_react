@@ -80,7 +80,7 @@ const Navbar = () => {
 
       {/* logo  */}
       <div>
-        <NavLink to="/"><img src={logo} alt="" /></NavLink>
+        <NavLink to="/"><img src={logo} alt="Company Logo" /></NavLink>
         </div>
       {/* tabs  */}
       <div className="hidden md:flex gap-8 font-medium text-gray-700">

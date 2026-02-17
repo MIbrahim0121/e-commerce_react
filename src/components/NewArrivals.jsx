@@ -1,53 +1,9 @@
-// import React, { useState } from 'react'
-// import { useEffect } from 'react'
+// import React, { useState, useEffect } from 'react'
 // import { ShoppingBasket, Eye } from 'lucide-react';
 // import { useDispatch } from 'react-redux';
 // import { addToCart } from '../store/cartSlice';
 // import { toast } from 'react-toastify';
-// const NewArrivals = () => {
-//   const [products, setProducts] = useState([])
-
-//   useEffect(() => {
-//     // Fetch new arrivals data from an API or database
-
-//     const fetchnewArrivals = async () => {
-//       const response = await fetch('https://dummyjson.com/products');
-//       const data = await response.json();
-//       console.log(data);
-//       setProducts(data.products.slice(0, 10));
-
-//     }
-//     fetchnewArrivals()
-
-//   }  
-//     , [])
-
-//   const dispatch = useDispatch();
-
-
-//   const addCart = (product) => {
-//     try {
-//      dispatch(addToCart(product));
-//      toast.success(` added to cart!`, {
-//        position: 'top-center',
-//        autoClose: 2000,
-//        hideProgressBar: false,
-//        closeOnClick: true,
-//        pauseOnHover: true,
-//        draggable: true,
-//      });
-//      } catch (error) {
-//       console.log(error);
-//       toast.error('Failed to add to cart', {
-//         position: 'top-center',
-//       });
-//     }
-//   }
-
-//   const handleProduct = () => {
-//     console.log("handle product ok");
-    
-//   }
+// import { Link } from 'react-router-dom';
 
 
 //   return (
@@ -63,7 +19,7 @@
 
 //                 {/* Center Text just to show it's an image area */}
 //                 <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
-//                   <img src={product.images[0]} alt="" />
+//                   <img src={product.images[0]} alt={product.title} />
 //                 </div>
 
 //                 {/* Hover Action Buttons (CSS Only - No JS) */}
@@ -148,23 +104,32 @@
 
 
 
-import React, { useState, useEffect } from 'react'
+import  { useState, useEffect } from 'react'
 import { ShoppingBasket, Eye } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../store/cartSlice'; // Make sure path is correct
+import { addToCart } from '../store/cartSlice'; 
 import { toast } from 'react-toastify';
-// 1. IMPORT LINK
 import { Link } from 'react-router-dom';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import ProductCardSkeleton from './ProductCardSkeleton';
 
 const NewArrivals = () => {
   const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchnewArrivals = async () => {
-      const response = await fetch('https://dummyjson.com/products');
-      const data = await response.json();
-      setProducts(data.products.slice(0, 8));
+      try {
+        const response = await fetch('https://dummyjson.com/products');
+        const data = await response.json();
+        setProducts(data.products.slice(0, 8));
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      }
     }
     fetchnewArrivals()
   }, [])
@@ -196,8 +161,14 @@ const NewArrivals = () => {
   }
 
   return (
-    <div className='grid md:grid-cols-4 grid-cols-2 gap-5'>
-      {products.length > 0 && products.map((product) => (
+    <div className='w-[85vw] m-auto pb-10 grid md:grid-cols-4 grid-cols-2 gap-5'>
+      {loading ? (
+        // Show skeletons while loading
+        Array.from({ length: 8 }).map((_, index) => (
+          <ProductCardSkeleton key={index} />
+        ))
+      ) : (
+        products.length > 0 && products.map((product) => (
         
         // 3. MAIN WRAPPER KO 'LINK' BANA DIYA
         // Ab kahin bhi click kroge to '/shop/id' par jaoge
@@ -210,9 +181,14 @@ const NewArrivals = () => {
             
               {/* IMAGE SECTION */}
               <div className="relative w-full h-95 bg-gray-200 mb-4 overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
-                  <img src={product.images[0]} alt="" className='w-full h-full object-cover'/>
-                </div>
+                <LazyLoadImage
+                  src={product.images[0]}
+                  alt={product.title}
+                  className='w-full h-full object-cover'
+                  effect="blur"
+                  placeholderSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+"
+                  wrapperClassName="absolute inset-0"
+                />
 
                 {/* HOVER ICONS */}
                 <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
@@ -238,7 +214,7 @@ const NewArrivals = () => {
                   {product.category}
                 </p>
                 <p className="text-[17px] font-bold text-gray-900 mt-1 mb-3">
-                  ₹{product.price}
+                  ${product.price}
                 </p>
 
                 {/* Sizes & Colors (Visual Only) */}
@@ -266,7 +242,7 @@ const NewArrivals = () => {
               </div>
           </div>
         </Link>
-      ))}
+      )))}
     </div>
   )
 }
