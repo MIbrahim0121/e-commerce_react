@@ -1,17 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import logo from '../assets/header-logo.webp'
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaOpencart } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Menu, X } from 'lucide-react'; // Icons import kiye
-import { useState } from 'react';
+// useState imported above
 
 
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(false)
+
+  // Lock body scroll when drawer is open and close on Escape
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'auto';
+    return () => { document.body.style.overflow = 'auto'; };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') setIsMobileMenuOpen(false); };
+    if (isMobileMenuOpen) window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isMobileMenuOpen]);
 
 
   const navLinks = [
@@ -33,20 +45,26 @@ const Navbar = () => {
       <button
         className="md:hidden text-gray-700 hover:text-red-600"
         onClick={() => setIsMobileMenuOpen(true)}
+        aria-label="Open menu"
       >
         <Menu size={28} />
       </button>
 
       {/* mobile menu overlay  */}
       <div
-        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
           }`}
         onClick={() => setIsMobileMenuOpen(false)}
+        aria-hidden={!isMobileMenuOpen}
       ></div>
 
       <div
-        className={`fixed top-0 left-0 h-full w-[80%] bg-white z-50 shadow-xl transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!isMobileMenuOpen}
+        className={`fixed top-0 left-0 h-screen w-[80%] bg-white/95 z-50 shadow-xl transform transition-transform duration-300 ease-in-out overflow-y-auto pb-8 pt-6 safe-inset-top safe-inset-bottom ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
+        style={{ height: '100vh' }}
       >
 
         {/* Drawer Header (Logo + Close Button) */}

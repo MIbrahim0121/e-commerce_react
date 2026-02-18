@@ -161,7 +161,7 @@ const Cart = () => {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.5 }}
                         >
-                            <div className="bg-white rounded-lg shadow-md p-6 sticky top-8">
+                            <div className="bg-white rounded-lg shadow-md p-6 lg:sticky lg:top-8">
                                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
 
                                 {/* Promo Code Section */}
@@ -228,6 +228,16 @@ const Cart = () => {
                                 </Link>
                             </div>
                         </motion.div>
+                        {/* Mobile checkout bar */}
+                        <div className="fixed left-0 right-0 bottom-0 bg-white border-t p-4 flex items-center gap-4 md:hidden z-50">
+                          <div className="flex-1">
+                            <div className="text-sm text-gray-600">Total</div>
+                            <div className="text-lg font-bold text-red-600">${total.toFixed(2)}</div>
+                          </div>
+                          <button onClick={handleCheckout} disabled={checkoutLoading} className="bg-red-600 text-white px-4 py-2 rounded-md font-bold">
+                            {checkoutLoading ? 'Processing...' : 'Checkout'}
+                          </button>
+                        </div>
                     </div>
                 )}
             </div>

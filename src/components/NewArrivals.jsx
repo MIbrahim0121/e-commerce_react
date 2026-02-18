@@ -108,7 +108,7 @@ import  { useState, useEffect } from 'react'
 import { ShoppingBasket, Eye } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../store/cartSlice'; 
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
@@ -153,7 +153,7 @@ const NewArrivals = () => {
       dispatch(addToCart(product)); 
       toast.success(`${product.title} added to cart!`, {
         position: 'top-center',
-        autoClose: 2000,
+        duration: 2000,
       });
     } catch (error) { 
       console.log(error);

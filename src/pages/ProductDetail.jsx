@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // 1. URL se ID nikalne ke liye
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice"; // Path check kar lena
-import { toast } from "react-toastify";
+import toast from 'react-hot-toast';
 import { Star, ShoppingBasket } from "lucide-react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
