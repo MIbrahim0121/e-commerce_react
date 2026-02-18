@@ -4,7 +4,8 @@ const loadCart = () => {
     try {
         const serialized = localStorage.getItem('cart')
         return serialized ? JSON.parse(serialized) : []
-    } catch (_) {
+    } catch (error) {
+        console.error('Error loading cart from localStorage:', error)
         return []
     }
 }
@@ -12,14 +13,33 @@ const loadCart = () => {
 const saveCart = (cart) => {
     try {
         localStorage.setItem('cart', JSON.stringify(cart))
-    } catch (_) {
-        // ignore write errors
+    } catch (error) {
+        console.error('Error saving cart to localStorage:', error)
+    }
+}
+
+const loadWishlist = () => {
+    try {
+        const serialized = localStorage.getItem('wishlist')
+        return serialized ? JSON.parse(serialized) : []
+    } catch (error) {
+        console.error('Error loading wishlist from localStorage:', error)
+        return []
+    }
+}
+
+const saveWishlist = (wishlist) => {
+    try {
+        localStorage.setItem('wishlist', JSON.stringify(wishlist))
+    } catch (error) {
+        console.error('Error saving wishlist to localStorage:', error)
     }
 }
 
 const initialState = {
     products: [],
     cart: loadCart(),
+    wishlist: loadWishlist(),
     status: 'idle',
     error: null,
 }
@@ -63,9 +83,24 @@ export const productSlice = createSlice({
         removeToCart: (state, action) => {
             state.cart = state.cart.filter(item => item.id !== action.payload)
             saveCart(state.cart)
+        },
+        addToWishlist: (state, action) => {
+            const exists = state.wishlist.find(item => item.id === action.payload.id)
+            if (!exists) {
+                state.wishlist.push(action.payload)
+                saveWishlist(state.wishlist)
+            }
+        },
+        removeFromWishlist: (state, action) => {
+            state.wishlist = state.wishlist.filter(item => item.id !== action.payload)
+            saveWishlist(state.wishlist)
+        },
+        clearWishlist: (state) => {
+            state.wishlist = []
+            saveWishlist(state.wishlist)
         }
     }
 })
 
-export const { addToCart, removeToCart, decrement, increment } = productSlice.actions
+export const { addToCart, removeToCart, decrement, increment, addToWishlist, removeFromWishlist, clearWishlist } = productSlice.actions
 export default productSlice.reducer

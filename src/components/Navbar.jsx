@@ -28,7 +28,7 @@ const Navbar = () => {
   };
 
   return (<>
-    <div className='bg-white w-full  p-4  flex justify-around items-center' >
+    <div className='bg-white/80 backdrop-blur-md w-full p-4 flex justify-around items-center shadow-lg sticky top-0 z-40' >
       {/* mobile menu button  */}
       <button
         className="md:hidden text-gray-700 hover:text-red-600"

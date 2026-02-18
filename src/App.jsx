@@ -2,8 +2,7 @@ import './App.css'
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import { Outlet } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { Toaster } from 'react-hot-toast'
 
 
 function App() {
@@ -15,7 +14,23 @@ function App() {
         <Outlet />
       </div>
       <Footer />
-      <ToastContainer />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+          success: {
+            duration: 2000,
+            theme: {
+              primary: '#10b981',
+            },
+          },
+        }}
+      />
     </div>
   )
 }

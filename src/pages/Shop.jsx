@@ -1,17 +1,19 @@
 import React, { useMemo } from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { ShoppingBasket, Eye } from 'lucide-react';
+import { ShoppingBasket, Eye, Heart } from 'lucide-react';
 import { Filter } from 'lucide-react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
-import { addToCart } from '../store/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { addToCart, addToWishlist, removeFromWishlist } from '../store/cartSlice';
 import { Link } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
+import SearchBar from '../components/SearchBar';
+import { motion } from 'framer-motion';
 
 
 
@@ -20,6 +22,7 @@ const Shop = () => {
   const [products, setProducts] = useState([])
     const [categories, setCategories] = useState([]);   
     const [loading, setLoading] = useState(true)
+    const [searchTerm, setSearchTerm] = useState('')
 
 // Filters 
         const [selectedCategory, setSelectedCategory] = useState("All");
@@ -27,6 +30,8 @@ const [priceRange, setPriceRange] = useState(2000);
 const [sortOrder, setSortOrder] = useState("");
 const [currentPage, setCurrentPage] = useState(1);
 const itemsPerPage = 9;
+
+const wishlist = useSelector((state) => state.products.wishlist)
 
   useEffect(() => {
 
@@ -51,25 +56,35 @@ const itemsPerPage = 9;
   const filteredProducts = useMemo(() => {
     let tempProducts = [...allProducts];
  
-   //   filtering 
+    // Search filter
+    if (searchTerm.trim()) {
+      tempProducts = tempProducts.filter(product =>
+        product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Category filtering
     if(selectedCategory !== "All"){
-     tempProducts = tempProducts.filter(product => product.category === selectedCategory);
-   }
-// filter by price 
-   tempProducts = tempProducts.filter(product => product.price <= priceRange);
-   
-   if(sortOrder === "low-high"){
-     tempProducts.sort((a,b) => a.price - b.price);
-   }
-   else if(sortOrder === "high-low"){
-     tempProducts.sort((a,b) => b.price - a.price);
-   }
-   // update ui 
-   return tempProducts;
-   }, [selectedCategory, priceRange, sortOrder, allProducts])
+      tempProducts = tempProducts.filter(product => product.category === selectedCategory);
+    }
+
+    // Filter by price
+    tempProducts = tempProducts.filter(product => product.price <= priceRange);
+    
+    // Sorting logic
+    if(sortOrder === "low-high"){
+      tempProducts.sort((a,b) => a.price - b.price);
+    }
+    else if(sortOrder === "high-low"){
+      tempProducts.sort((a,b) => b.price - a.price);
+    }
+
+    return tempProducts;
+   }, [selectedCategory, priceRange, sortOrder, allProducts, searchTerm])
 
    useEffect(() => {
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1); 
    }, [filteredProducts])
     
     const dispatch = useDispatch();
@@ -77,21 +92,44 @@ const itemsPerPage = 9;
     const addCart = (product) => {
       try {
         dispatch(addToCart(product));
-        toast.success(` added to cart!`, {
-          position: 'top-center',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+        toast.success(`${product.title.substring(0, 20)}... added to cart! 🛒`)
       } catch (error) {
         console.log(error);
-        toast.error('Failed to add to cart', {
-          position: 'top-center',
-        });
+        toast.error('Failed to add to cart')
       }
     }
+
+    const toggleWishlist = (product) => {
+      const inWishlist = wishlist?.some(item => item.id === product.id)
+      if (inWishlist) {
+        dispatch(removeFromWishlist(product.id))
+        toast.success('Removed from wishlist')
+      } else {
+        dispatch(addToWishlist(product))
+        toast.success('Added to wishlist ❤️')
+      }
+    }
+
+    const containerVariants = {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.1,
+          delayChildren: 0.2,
+        },
+      },
+    };
+
+    const cardVariants = {
+      hidden: { opacity: 0, y: 20 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5 },
+      },
+    };
+
   return (
     <div className='px-20' >
       <div>
@@ -100,6 +138,14 @@ const itemsPerPage = 9;
         <h1 className="text-4xl font-bold text-center md:text-left  text-gray-900 mb-8">Shop</h1>
 
         
+
+        {/* Search Bar */}
+        <div className="mb-8">
+          <SearchBar 
+            onSearch={setSearchTerm}
+            placeholder="Search by product name or description..."
+          />
+        </div>
 
         {/* Filter and Sorting Row */}
         <div className="flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 pt-6 space-y-4 sm:space-y-0">
@@ -212,7 +258,12 @@ const itemsPerPage = 9;
     <div className='md:col-span-3'>
       
     
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+      <motion.div 
+        className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         
         {loading ? (
           // Show skeletons while loading
@@ -221,7 +272,12 @@ const itemsPerPage = 9;
           ))
         ) : (
           filteredProducts.length > 0 && filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
-          <div key={product.id} className='w-full font-sans group cursor-pointer'>
+          <motion.div 
+            key={product.id} 
+            className='w-full font-sans group cursor-pointer'
+            variants={cardVariants}
+            whileHover={{ y: -8, transition: { duration: 0.3 } }}
+          >
             <Link
              to={`/shop/${product.id}`} 
              className='block'>
@@ -243,8 +299,15 @@ const itemsPerPage = 9;
                     <div className="bg-white p-2 rounded-full shadow hover:bg-black hover:text-white transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); addCart(product); }}>
                       <ShoppingBasket size={18} />
                     </div>
-                    <div className="bg-white p-2 rounded-full shadow hover:bg-black hover:text-white transition-colors cursor-pointer">
-                      <Eye size={18} />
+                    <div 
+                      className={`p-2 rounded-full shadow transition-colors cursor-pointer ${
+                        wishlist?.some(item => item.id === product.id)
+                          ? 'bg-red-500 text-white'
+                          : 'bg-white hover:bg-red-500 hover:text-white'
+                      }`}
+                      onClick={(e) => { e.preventDefault(); toggleWishlist(product); }}
+                    >
+                      <Heart size={18} fill={wishlist?.some(item => item.id === product.id) ? 'currentColor' : 'none'} />
                     </div>
                   </div>
                 </div>
@@ -279,10 +342,10 @@ const itemsPerPage = 9;
              <button className='bg-red-600 text-white px-5 py-2 mt-3 w-full rounded hover:bg-red-700 transition-colors' onClick={() => addCart(product)} >Add to Cart</button>
 
           
-          </div>
+          </motion.div>
         )))}
 
-      </div>
+      </motion.div>
 
       {/* Pagination Section */}
       <div className='flex justify-center mt-8'>

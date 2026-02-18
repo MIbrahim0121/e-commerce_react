@@ -113,6 +113,7 @@ import { Link } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import ProductCardSkeleton from './ProductCardSkeleton';
+import { motion } from 'framer-motion';
 
 const NewArrivals = () => {
   const [products, setProducts] = useState([])
@@ -160,8 +161,33 @@ const NewArrivals = () => {
     }
   }
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
+  };
+
   return (
-    <div className='w-[85vw] m-auto pb-10 grid md:grid-cols-4 grid-cols-2 gap-5'>
+    <motion.div 
+      className='w-[85vw] m-auto pb-10 grid md:grid-cols-4 grid-cols-2 gap-5'
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {loading ? (
         // Show skeletons while loading
         Array.from({ length: 8 }).map((_, index) => (
@@ -170,13 +196,15 @@ const NewArrivals = () => {
       ) : (
         products.length > 0 && products.map((product) => (
         
-        // 3. MAIN WRAPPER KO 'LINK' BANA DIYA
-        // Ab kahin bhi click kroge to '/shop/id' par jaoge
-        <Link 
-            to={`/shop/${product.id}`} 
-            key={product.id} 
-            className='w-full max-w-70 font-sans group cursor-pointer block' // 'block' add kiya taake link full width le
+        <motion.div
+          variants={cardVariants}
+          whileHover={{ y: -8, transition: { duration: 0.3 } }}
+          key={product.id}
         >
+          <Link 
+              to={`/shop/${product.id}`} 
+              className='w-full max-w-70 font-sans group cursor-pointer block' 
+          >
           <div className='w-full'>
             
               {/* IMAGE SECTION */}
@@ -242,8 +270,9 @@ const NewArrivals = () => {
               </div>
           </div>
         </Link>
+        </motion.div>
       )))}
-    </div>
+    </motion.div>
   )
 }
 
